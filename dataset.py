@@ -193,29 +193,37 @@ class SubsetFineWebEdu2Loader(SubsetLoader):
         self.padded_buffer = []
         self.tokenizer = tokenizer
 
+        # Initialize the stop_event here so it's always available
+        self.stop_event = threading.Event()
+
+
         # Handle initialization based on pages_info
         if pages_info is not None:
             # Set pages and num_pages if pages_info is provided
             self.pages = pages_info
             self.num_pages = len(self.pages)
-            # Initialize buffer and fetch data synchronously
+            # Initialize buffer
             self.buffer = []
-            asyncio.run(self.fetch_data_for_pages(self.pages))
-            # Set stop event to indicate completion
-            self.stop_event = threading.Event()
-            self.stop_event.set()
+            # Do not fetch data here
+            # Data will be fetched in the initialize method
+
         else:
             # Initialize for asynchronous fetching
             self.pages = None
             self.num_pages = num_pages
             self.data_queue = Queue(maxsize=1)
-            self.stop_event = threading.Event()
             self.loop = asyncio.new_event_loop()
             # Start background fetching thread
             self.fetch_thread = threading.Thread(
                 target=self._start_event_loop, daemon=True
             )
             self.fetch_thread.start()
+
+    async def initialize(self):
+        """Asynchronously fetch data after object creation."""
+        await self.fetch_data_for_pages(self.pages)
+        # Set stop event to indicate completion
+        self.stop_event.set()
 
     def _start_event_loop(self):
         """
