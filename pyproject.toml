@@ -22,6 +22,7 @@ dependencies = [
     "uvloop>=0.21.0",
     "aiofiles>=24.1.0",
     "ruff>=0.6.9",
+    "ipython>=8.28.0",
 ]
 
 [build-system]
