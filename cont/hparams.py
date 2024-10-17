@@ -22,10 +22,11 @@ import requests
 from types import SimpleNamespace
 from transformers import AutoTokenizer, LlamaConfig
 
-from common import *
+from cont.common import *
 
 # Cache file path
 HPARAMS_FILE = "hparams.json"
+
 
 def create_namespace(hparams: dict) -> SimpleNamespace:
     """
